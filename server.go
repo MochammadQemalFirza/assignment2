@@ -26,7 +26,7 @@ func main() {
 		log.Fatal("port tidak ditemukan")
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		msg:= "first commit"
+		msg:= "create connection"
 		fmt.Fprint(w,msg)
 	})
 
