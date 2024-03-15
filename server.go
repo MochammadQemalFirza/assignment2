@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	db "github.com/MochammadQemalFirza/assignment2/config"
+	"github.com/MochammadQemalFirza/assignment2/routes"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -19,17 +20,13 @@ func main() {
 		log.Println(err.Error())
 		return
 	}
-	db.CreateCon()
-
+	db:= db.CreateCon()
+g:= gin.New()
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("port tidak ditemukan")
 	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		msg:= "create connection"
-		fmt.Fprint(w,msg)
-	})
-
-	http.ListenAndServe(fmt.Sprintf(":%v", port),nil)
+routes.InitRouter(g,db)
+g.Run(fmt.Sprintf(":%v", port))
 
 }
