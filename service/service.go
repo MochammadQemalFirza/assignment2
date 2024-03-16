@@ -6,4 +6,5 @@ import (
 
 type Service interface {
 	CreateOrdersItems(payload web.CustItem)(*web.CustItem, error)
+	GetAllOrdersItems()([]web.CustItem, error)
 }

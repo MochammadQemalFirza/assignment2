@@ -2,6 +2,7 @@ package web
 
 import "time"
 
+
 type CustItem struct {
 	OrderedAt time.Time `json:"orderedAt"`
 	CustomerName string `json:"customerName"`
@@ -13,3 +14,4 @@ type Items struct {
 	Description string `json:"description"`
 	Quantity    int`json:"quantity"`
 }
+

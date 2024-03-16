@@ -2,6 +2,12 @@ package domain
 
 import "time"
 
+type ItemsOrder struct{
+	Orders Orders
+	Items Items
+}
+
+
 type Items struct {
 	ItemID int `json:"item_id"`
 	ItemCode string `json:"item_code"`

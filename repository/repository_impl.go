@@ -58,6 +58,48 @@ func(r *RepositoryImpl)CreateOrdersItems(orders domain.Orders, items []domain.It
 	return nil
 }
 
+func(r *RepositoryImpl)GetAllOrdersItems()([]domain.Items, error){
+	ListOrdersItems :=[]domain.Items{}
+	SelectOrders := `
+	SELECT
+    	orders.order_id,
+    	orders.ordered_at,
+    	orders.customer_name,
+    	items.item_id,
+    	items.item_code,
+    	items.description,
+    	items.quantity
+	FROM
+    	orders
+	JOIN
+   		 items ON orders.order_id = items.order_id;
+	`
+
+	result,err := r.db.Query(SelectOrders)
+	if err!=nil{
+		return nil, err
+	}
+	for result.Next() {
+		item := domain.Items{}
+		err := result.Scan(
+			&item.Orders.OrderID,
+			&item.Orders.OrderedAt,
+			&item.Orders.CustomerName,
+			&item.ItemID,
+			&item.ItemCode,
+			&item.Description,
+			&item.Quantity,
+		)
+		if err != nil {
+			return nil,err
+		 }
+		ListOrdersItems = append(ListOrdersItems, item)
+	}
+
+	return ListOrdersItems,nil
+
+}
+
 func NewRepository(db *sql.DB) Repository{
 	return &RepositoryImpl{db: db}
 }

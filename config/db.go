@@ -40,7 +40,7 @@ func CreateCon() *sql.DB {
 		fmt.Println("db is not connected", err.Error())
 	}
 	_, err = db.Exec(`
-	CREATE TABLE IF NOT EXISTS orders (
+		CREATE TABLE IF NOT EXISTS orders (
 		order_id Serial PRIMARY KEY,
 		customer_name VARCHAR(100) NOT NULL,
 		ordered_at timestamptz default now()
