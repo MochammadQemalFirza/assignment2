@@ -39,6 +39,9 @@ PORT = "8083"
 ```
 * Run the server by typing this command on root folder project
 ```
+go mod tidy
+```
+```
 go run server.go
 ```
 
