@@ -15,3 +15,13 @@ type Items struct {
 	Quantity    int`json:"quantity"`
 }
 
+type WebResponse struct{
+	Message string      `json:"message"`
+	Status  int         `json:"status"`
+	Result  interface{} `json:"data"`
+}
+
+type BaseResponse struct{
+	Message string      `json:"message"`
+	Status  int         `json:"status"`
+}
