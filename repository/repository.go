@@ -7,4 +7,5 @@ type Repository interface {
 	GetAllOrdersItems()([]domain.Items, error)
 	GetOrderById(orderId int) ([]domain.Items, error)
 	UpdateOrdersItems(orders domain.Orders, items []domain.Items) error
+	DeleteOrderById(orderId int) error
 }

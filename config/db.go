@@ -56,7 +56,7 @@ func CreateCon() *sql.DB {
 			order_id INT NOT NULL,
 			created_at timestamptz DEFAULT now(),
 			updated_at timestamptz DEFAULT now(),
-			FOREIGN KEY (order_id) REFERENCES orders (order_id)
+			FOREIGN KEY (order_id) REFERENCES orders (order_id) ON DELETE CASCADE
 		);
 	
 	`) 

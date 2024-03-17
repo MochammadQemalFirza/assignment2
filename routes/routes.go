@@ -28,5 +28,6 @@ func InitRouter(g *gin.Engine, db *sql.DB) {
 	g.POST("/orders", controller.CreateOrdersItems)
 	g.GET("/orders", controller.GetAllOrdersItems)
 	g.PUT("/orders/:order_id", controller.UpdateOrdersItems)
+	g.DELETE("/orders/:order_id", controller.DeleteOrdersItems)
 }
 

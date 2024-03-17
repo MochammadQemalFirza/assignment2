@@ -132,6 +132,35 @@ func(controller *ControllerImpl)UpdateOrdersItems(c *gin.Context){
 	})
 }
 
+func(controller *ControllerImpl)DeleteOrdersItems(c *gin.Context){
+
+	orderIDStr := c.Param("order_id")
+	
+	orderID, err := strconv.Atoi(orderIDStr)
+	
+	if err != nil {
+		c.JSON(http.StatusBadRequest, web.BaseResponse{
+			Message: "invalid order ID",
+			Status:  http.StatusBadRequest,
+		})
+		return
+	}
+
+	err = controller.Service.DeleteOrdersItemsByID(orderID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, web.BaseResponse{
+			Message: err.Error(),
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, web.BaseResponse{
+		Message :"Order deleted successfully",
+		Status : http.StatusOK,
+	})
+}
+
 func NewController(Service service.Service) Controller {
 	return &ControllerImpl{Service: Service}
 }

@@ -209,7 +209,49 @@ func(r *RepositoryImpl)	UpdateOrdersItems(orders domain.Orders, items []domain.I
 			 }
 	}
 
-	
+	err = tx.Commit()
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return nil
+}
+
+func(r *RepositoryImpl)DeleteOrderById(orderID int) error{
+	tx, err := r.db.Begin()
+	if err != nil{
+		return err
+	}
+	items, err := r.GetOrderById(orderID)
+    if err != nil {
+        return err
+    }
+	DeleteItemsOrderByID := `
+	DELETE FROM 
+		items 
+	WHERE 
+		order_id = $1
+	`
+	for _, item := range items{
+		_, err = tx.Exec(DeleteItemsOrderByID, item.Orders.OrderID)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	DeleteOrdersItemsByID := `
+	DELETE FROM orders WHERE order_id = $1
+	`
+
+	_, err = tx.Exec(DeleteOrdersItemsByID, orderID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	err = tx.Commit()
 
 	if err != nil {

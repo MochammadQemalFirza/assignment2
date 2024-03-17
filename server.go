@@ -20,13 +20,19 @@ func main() {
 		log.Println(err.Error())
 		return
 	}
+
 	db:= db.CreateCon()
-g:= gin.New()
+	
+	g:= gin.New()
+	
 	port := os.Getenv("PORT")
+	
 	if port == "" {
 		log.Fatal("port tidak ditemukan")
 	}
-routes.InitRouter(g,db)
-g.Run(fmt.Sprintf(":%v", port))
+	
+	routes.InitRouter(g,db)
+	
+	g.Run(fmt.Sprintf(":%v", port))
 
 }

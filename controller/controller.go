@@ -6,4 +6,5 @@ type Controller interface {
 	CreateOrdersItems(c *gin.Context)
 	GetAllOrdersItems(c *gin.Context)
 	UpdateOrdersItems(c *gin.Context)
+	DeleteOrdersItems(c *gin.Context)
 }

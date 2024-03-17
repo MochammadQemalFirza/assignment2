@@ -1,6 +1,9 @@
 package service
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/MochammadQemalFirza/assignment2/model/domain"
 	web "github.com/MochammadQemalFirza/assignment2/model/web"
 	"github.com/MochammadQemalFirza/assignment2/repository"
@@ -148,6 +151,26 @@ func(s *ServiceImpl)UpdateOrdersItems(orderID int, payload web.CustItem)(*web.Cu
 	}
 
 	return &payload, nil
+}
+
+func(s *ServiceImpl)DeleteOrdersItemsByID(orderID int)error{
+
+	existingItems, err := s.Repository.GetOrderById(orderID)
+	fmt.Println(existingItems)
+	if err != nil {
+		return err
+	}
+	if len(existingItems) == 0 {
+		return errors.New("order with given ID not found")
+	}
+
+	err = s.Repository.DeleteOrderById(orderID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewService(Repository repository.Repository) Service {
