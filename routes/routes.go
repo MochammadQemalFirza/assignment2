@@ -14,7 +14,8 @@ func InitRouter(g *gin.Engine, db *sql.DB) {
 	service := service.NewService(repository)
 	controller := controller.NewController(service)
 
-	g.POST("/orders", controller.CreateOrdersItemsHandler)
+	g.POST("/orders", controller.CreateOrdersItems)
 	g.GET("/orders", controller.GetAllOrdersItems)
+	g.PUT("/orders/:order_id", controller.UpdateOrdersItems)
 }
 

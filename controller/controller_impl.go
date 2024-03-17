@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/MochammadQemalFirza/assignment2/model/web"
 	"github.com/MochammadQemalFirza/assignment2/service"
@@ -12,7 +14,7 @@ type ControllerImpl struct {
 	Service service.Service
 }
 
-func (controller *ControllerImpl) CreateOrdersItemsHandler(c *gin.Context) {
+func (controller *ControllerImpl) CreateOrdersItems(c *gin.Context) {
 	
 	payload := web.CustItem{}
 	
@@ -53,7 +55,7 @@ func(controller *ControllerImpl)GetAllOrdersItems(c *gin.Context){
 
 	if len(res) == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
-			"Message": "Data tidak tersedia!",
+			"Message": "Data not found!",
 			"Status":  http.StatusNotFound,
 		})
 		return 
@@ -62,6 +64,42 @@ func(controller *ControllerImpl)GetAllOrdersItems(c *gin.Context){
 	c.JSON(http.StatusFound, gin.H{
 		"messages":"successfully get all orders items",
 		"result": res,
+	})
+}
+
+func(controller *ControllerImpl)UpdateOrdersItems(c *gin.Context){
+
+	orderIDStr := c.Param("order_id")
+	orderID, err := strconv.Atoi(orderIDStr)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid order ID",
+		})
+		return
+	}
+
+	var payload web.CustItem
+	if err := c.ShouldBindJSON(&payload); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request body",
+		})
+		return
+	}
+
+	res, err := controller.Service.UpdateOrdersItems(orderID, payload)
+	if err != nil {
+		fmt.Println("Error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update order items", 
+			"details": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+	"message": "Order items updated successfully", 
+	"result": res,
 	})
 }
 

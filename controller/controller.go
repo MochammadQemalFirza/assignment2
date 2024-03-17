@@ -3,6 +3,7 @@ package controller
 import "github.com/gin-gonic/gin"
 
 type Controller interface {
-	CreateOrdersItemsHandler(c *gin.Context)
+	CreateOrdersItems(c *gin.Context)
 	GetAllOrdersItems(c *gin.Context)
+	UpdateOrdersItems(c *gin.Context)
 }

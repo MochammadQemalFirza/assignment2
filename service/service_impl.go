@@ -42,44 +42,112 @@ func (s *ServiceImpl) CreateOrdersItems(payload web.CustItem) (*web.CustItem, er
 }
 
 func (s *ServiceImpl) GetAllOrdersItems() ([]web.CustItem, error) {
-	listOrdersItemsWeb := []web.CustItem{}
-	// listItemsDomain := []domain.Items{}
-	// listItemsWeb := []web.Items{}
+
+	groupedOrders := make(map[string]web.CustItem)
+
+
 	listOrdersItemsDomain, err := s.Repository.GetAllOrdersItems()
 	if err != nil {
 		return nil, err
 	}
 
-// for _,order:= range listOrdersItemsDomain{
-// listOrdersItemsWeb = append(listOrdersItemsWeb, web.CustItem{
-// 	OrderedAt: order.Orders.OrderedAt,
-// 	CustomerName:  order.Orders.CustomerName,
-// 	Items : listItemsWeb,
-// 	})
-// 	for _,item:= range listItemsDomain{
-// 		listItemsWeb = append(listItemsWeb,web.Items{
-// 			ItemCode: item.ItemCode,
-// 			Description: item.Description,
-// 			Quantity: item.Quantity,
-// 		} )
-// 	}
-// }
 
 	for _, item := range listOrdersItemsDomain {
-		var listItemsWeb []web.Items 
-		listItemsWeb = append(listItemsWeb, web.Items{
+
+		custItem, ok := groupedOrders[item.Orders.CustomerName]
+		if !ok {
+		
+			custItem = web.CustItem{
+				OrderedAt:    item.Orders.OrderedAt,
+				CustomerName: item.Orders.CustomerName,
+				Items:        []web.Items{},
+			}
+		}
+
+	
+		custItem.Items = append(custItem.Items, web.Items{
 			ItemCode:    item.ItemCode,
 			Description: item.Description,
 			Quantity:    item.Quantity,
 		})
-		listOrdersItemsWeb = append(listOrdersItemsWeb, web.CustItem{
-			OrderedAt:    item.Orders.OrderedAt,
-			CustomerName: item.Orders.CustomerName,
-			Items:        listItemsWeb,
-		})
+
+		
+		groupedOrders[item.Orders.CustomerName] = custItem
 	}
+
+
+	var result []web.CustItem
+	for _, custItem := range groupedOrders {
+		result = append(result, custItem)
+	}
+
+	return result, nil
+}
+
+func(s *ServiceImpl)UpdateOrdersItems(orderID int, payload web.CustItem)(*web.CustItem, error){
+	var updatedItems []domain.Items
+	var items []domain.Items
+
+	items, err := s.Repository.GetOrderById(orderID)
 	
-	return listOrdersItemsWeb, nil
+	if err != nil {
+		return nil, err
+	}
+
+	order := domain.Orders{
+		OrderID:      orderID,
+		CustomerName: payload.CustomerName,
+		OrderedAt:    payload.OrderedAt,
+	}
+
+
+
+	for _, item := range payload.Items {
+
+		for _, dbItem := range items {
+			if item.ItemCode == dbItem.ItemCode {
+				updatedItem := domain.Items{
+					ItemCode:    item.ItemCode,
+					Description: item.Description,
+					Quantity:    item.Quantity,
+					Orders: domain.Orders{
+						OrderID: orderID,
+					},
+				}
+				updatedItems = append(updatedItems, updatedItem)
+				break
+			}
+		}
+	}
+
+	for _, item := range payload.Items {
+		found := false
+		for _, dbItem := range items {
+			if item.ItemCode == dbItem.ItemCode {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			newItem := domain.Items{
+				ItemCode:    item.ItemCode,
+				Description: item.Description,
+				Quantity:    item.Quantity,
+				Orders: domain.Orders{
+					OrderID: orderID,
+				},
+			}
+			updatedItems = append(updatedItems, newItem)
+		}
+	}
+
+	err = s.Repository.UpdateOrdersItems(order, updatedItems)
+	if err != nil {
+		return nil, err
+	}
+
+	return &payload, nil
 }
 
 func NewService(Repository repository.Repository) Service {

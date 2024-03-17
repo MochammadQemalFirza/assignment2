@@ -43,7 +43,9 @@ func CreateCon() *sql.DB {
 		CREATE TABLE IF NOT EXISTS orders (
 		order_id Serial PRIMARY KEY,
 		customer_name VARCHAR(100) NOT NULL,
-		ordered_at timestamptz default now()
+		ordered_at timestamptz default now(),
+		created_at timestamptz DEFAULT now(),
+		updated_at timestamptz DEFAULT now()
 		);
 
 		CREATE TABLE IF NOT EXISTS items (
@@ -52,6 +54,8 @@ func CreateCon() *sql.DB {
 			description TEXT,
 			quantity INT NOT NULL,
 			order_id INT NOT NULL,
+			created_at timestamptz DEFAULT now(),
+			updated_at timestamptz DEFAULT now(),
 			FOREIGN KEY (order_id) REFERENCES orders (order_id)
 		);
 	
